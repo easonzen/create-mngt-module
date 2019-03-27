@@ -29,10 +29,24 @@ if (typeof projectName === "undefined") {
   process.exit(1);
 }
 
+function setModuleName() {
+  const targetIndexPath = path.join(process.cwd(), projectName, "index.js");
+
+  fs.readFile(targetIndexPath, "utf-8", (err, data) => {
+    if (err) throw err;
+    let newData = data.replace(/ModuleName/g, projectName);
+    fs.writeFile(targetIndexPath, newData, "utf-8", err => {
+      if (err) throw err;
+    });
+  });
+}
+
 if (fs.existsSync(sourcePath)) {
   try {
     fs.copySync(sourcePath, projectName);
   } catch (error) {
     chalk.red(error);
   }
+
+  setModuleName();
 }
