@@ -1,5 +1,5 @@
 {
-  "name": "generate-code",
+  "name": "create-mngt-module",
   "version": "1.0.0",
   "description": "generate CURD module to folder",
   "bin": "index.js",
