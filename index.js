@@ -30,11 +30,16 @@ if (typeof projectName === "undefined") {
 }
 
 function setModuleName() {
-  const targetIndexPath = path.join(process.cwd(), projectName, "index.js");
+  const targetIndexPath = path.join(process.cwd(), projectName, "index.tsx");
 
   fs.readFile(targetIndexPath, "utf-8", (err, data) => {
     if (err) throw err;
-    let newData = data.replace(/ModuleName/g, projectName);
+    let newData = data
+      .replace(
+        /ModuleName-module-wrap/g,
+        `${projectName.toLowerCase()}-module-wrap`
+      )
+      .replace(/ModuleName/g, projectName);
     fs.writeFile(targetIndexPath, newData, "utf-8", err => {
       if (err) throw err;
     });
@@ -42,11 +47,12 @@ function setModuleName() {
 }
 
 if (fs.existsSync(sourcePath)) {
-  try {
-    fs.copySync(sourcePath, projectName);
-  } catch (error) {
-    chalk.red(error);
-  }
-
-  setModuleName();
+  fs.copy(sourcePath, projectName).then(
+    () => {
+      setModuleName();
+    },
+    error => {
+      chalk.red(error);
+    }
+  );
 }
